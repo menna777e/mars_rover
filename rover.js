@@ -87,14 +87,7 @@ class Rover {
         console.log(this.currentPosition)
 
         let obstacle = this.obstacles.find(obstacle => obstacle[0] === x && obstacle[1] === y);
-
         if(obstacle) return true;
-        // for(var index = 0; index < self.obstacles.length; index++) {
-        //     if (newLocation.toString() == self.obstacles[index].toString()) {
-        //         self.status = 'obstacle';
-        //         return true;
-        //     }
-        // }
         return false;
     }
 
@@ -102,9 +95,9 @@ class Rover {
     getInstructions(x = 1,y = 1,direction = "EAST"){
         this.targetPosition = [x,y];
 
+          // to get shortest instructions and minimum numberr of steps
         switch(this.direction){
 
-            // to get shortest instructions
             case "NORTH":
             case "SOUTH":
                 this.addShift_Y();
