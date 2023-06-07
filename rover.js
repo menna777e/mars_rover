@@ -1,10 +1,12 @@
 
 class Rover {
 
-    constructor(x = 0, y = 0, direction = "NORTH") {
+    constructor(x = 0, y = 0, direction = "NORTH",obstacles=[]) {
         this.currentPosition = [x,y];
         this.direction = direction;
         this.directions = ["NORTH", "EAST", "SOUTH", "WEST"];
+        this.obstacles = obstacles;
+        this.status = "";
         this.instructions ="";
       }
 
@@ -12,12 +14,11 @@ class Rover {
     move(instructions){
         const commands = instructions?.split("");
         this.translateCommands(commands)
-        return `(${this.currentPosition[0]},${this.currentPosition[1]}) ${this.direction}`
+        return `(${this.currentPosition[0]},${this.currentPosition[1]}) ${this.direction} ${this.status}`
     }
 
     translateCommands(commands) {
         commands?.map(command =>{
-
             switch (command){
                 case "L":
                 case "R":
@@ -27,8 +28,6 @@ class Rover {
                 case "B":
                     this.shift(command);
                     break;
-                // default:
-                //     throw new Error("Invalid instruction provided");
             }
         })
     }
@@ -37,10 +36,11 @@ class Rover {
         let [x,y] = [0,0];
         let newPosition;
 
+        if (this.status == "STOPPED") return;
+
         switch(this.direction){
             case "NORTH" :
                 y+=1;
-                console.log("yyyy",y)
                 break;
             case "SOUTH" :
                 y-=1;
@@ -57,15 +57,14 @@ class Rover {
             case "B":
                 x*= -1;
                 y*= -1;
-                newPosition = [this.currentPosition[0] + x, this.currentPosition[1] + y];
-                this.currentPosition = newPosition;
                 break;
             default:
                     break;
         }
 
         newPosition = [this.currentPosition[0] + x, this.currentPosition[1] + y];
-        this.currentPosition = newPosition;
+
+        this.isObstacle(newPosition[0], newPosition[1]) ? this.status = "STOPPED" : this.currentPosition = newPosition;
         
     }
 
@@ -82,6 +81,23 @@ class Rover {
         }
         this.direction = this.directions[index]
     }
+
+    isObstacle(x,y) {
+
+        console.log(this.currentPosition)
+
+        let obstacle = this.obstacles.find(obstacle => obstacle[0] === x && obstacle[1] === y);
+
+        if(obstacle) return true;
+        // for(var index = 0; index < self.obstacles.length; index++) {
+        //     if (newLocation.toString() == self.obstacles[index].toString()) {
+        //         self.status = 'obstacle';
+        //         return true;
+        //     }
+        // }
+        return false;
+    }
+
 
     getInstructions(x = 1,y = 1,direction = "EAST"){
         this.targetPosition = [x,y];
